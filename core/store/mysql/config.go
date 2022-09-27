@@ -1,6 +1,13 @@
-package sqlConfig
+package mysql
 
+import (
+    "github.com/go-sql-driver/mysql"
+    "net"
+    "strconv"
+    "time"
+)
 
+// 关系型数据库的配置
 type DBConf struct {
 
     // 以下配置关于dsn
@@ -28,3 +35,46 @@ type DBConf struct {
     ConnMaxIdletime string `json:"conn_max_idletime"` // 空闲最大生命周期
 
 }
+
+
+func (conf *DBConf) FormatDSN() (string, error) {
+
+    port := strconv.Itoa(conf.Port)
+
+    timeout ,err := time.ParseDuration(conf.Timeout)
+
+    readTimeout, err := time.ParseDuration(conf.ReadTimeout)
+    if err != nil {
+        return "", err
+    }
+    writeTimeout, err := time.ParseDuration(conf.WriteTimeout)
+    if err != nil {
+        return "", err
+    }
+    location, err := time.LoadLocation(conf.Loc)
+    if err != nil {
+        return "", err
+    }
+
+    driverConf := &mysql.Config{
+        User:                 conf.Username,
+        Passwd:               conf.Password,
+        Net:                  conf.Protocol,
+        Addr:                 net.JoinHostPort(conf.Host, port),
+        DBName:               conf.Database,
+        Collation:            conf.Collation,
+        Loc:                  location,
+        Timeout:              timeout,
+        ReadTimeout:          readTimeout,
+        WriteTimeout:         writeTimeout,
+        ParseTime:            conf.ParseTime,
+        AllowNativePasswords: conf.AllowNativePasswords,
+    }
+    return driverConf.FormatDSN(),nil
+
+}
+
+
+
+
+
