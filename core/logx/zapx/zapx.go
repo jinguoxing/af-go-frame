@@ -1,10 +1,7 @@
 package zapx
 
-
 import (
     "fmt"
-    "go.uber.org/zap/zapcore"
-
     "github.com/zeromicro/go-zero/core/logx"
     "go.uber.org/zap"
 )
@@ -18,7 +15,6 @@ type ZapWriter struct {
 func NewZapWriter(opts ...zap.Option) (logx.Writer, error) {
     opts = append(opts, zap.AddCallerSkip(callerSkipOffset))
 
-    zapcore.NewCore()
     logger, err := zap.NewProduction(opts...)
     if err != nil {
         return nil, err

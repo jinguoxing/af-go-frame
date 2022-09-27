@@ -18,7 +18,7 @@ type  IResponse interface {
 
 type DefaultHandlerResponse struct {
 
-    Code codes.Coder `json:"code"`
+    Code int `json:"code"`
     Message string  `json:"message"`
     Data interface{}    `json:"data"`
 
@@ -26,26 +26,26 @@ type DefaultHandlerResponse struct {
 
 
 // success Json Response
-func ResponseOkJson(message string, data interface{}, c *gin.Context) {
+func ResOkJson(c *gin.Context, message string, data interface{}) {
 
     var msg string
     code := codes.CodeOK
 
     if message == "" {
-        msg = "success"
+        msg = code.Message()
     } else {
         msg = message
     }
 
     c.JSON(http.StatusOK, DefaultHandlerResponse{
-        code,
+        code.ErrorCode(),
         msg,
         data,
     })
 }
 
 // failed Json Response
-func ResponseJson(err error,message string, data interface{}, c *gin.Context) {
+func ResErrJson(c *gin.Context,err error,message string, data interface{}) {
     var (
         msg  string
         code = errors.Code(err)
@@ -70,7 +70,7 @@ func ResponseJson(err error,message string, data interface{}, c *gin.Context) {
     }
 
     c.JSON(http.StatusOK, DefaultHandlerResponse{
-        code,
+        code.ErrorCode(),
         msg,
         data,
     })
