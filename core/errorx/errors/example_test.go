@@ -1,8 +1,8 @@
 package errors_test
 
 import (
-    "af-go-frame/core/errorx/codes"
-    "af-go-frame/core/errorx/errors"
+    "github.com/jinguoxing/af-go-frame/core/errorx/codes"
+    "github.com/jinguoxing/af-go-frame/core/errorx/errors"
     "fmt"
 )
 

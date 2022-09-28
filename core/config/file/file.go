@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"af-go-frame/core/config"
+	"github.com/jinguoxing/af-go-frame/core/config"
 )
 
 var _ config.Source = (*file)(nil)

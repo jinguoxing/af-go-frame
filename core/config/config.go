@@ -8,8 +8,8 @@ import (
 	"time"
 
 	// init encoding
-	_ "af-go-frame/core/encoding/json"
-	_ "af-go-frame/core/encoding/yaml"
+	_ "github.com/jinguoxing/af-go-frame/core/encoding/json"
+	_ "github.com/jinguoxing/af-go-frame/core/encoding/yaml"
 	"github.com/go-kratos/kratos/v2/log"
 )
 

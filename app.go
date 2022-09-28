@@ -1,7 +1,7 @@
 package af_go_frame
 
 import (
-    "af-go-frame/core/registry"
+    "github.com/jinguoxing/af-go-frame/core/registry"
     "context"
     "errors"
     "github.com/google/uuid"

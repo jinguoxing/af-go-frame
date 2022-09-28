@@ -10,7 +10,7 @@ import (
 
 	"google.golang.org/protobuf/proto"
 
-	"af-go-frame/core/encoding/json"
+	"github.com/jinguoxing/af-go-frame/core/encoding/json"
 )
 
 var (

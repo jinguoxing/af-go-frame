@@ -2,7 +2,7 @@ package redis
 
 
 import (
-    "af-go-frame/core/syncx"
+    "github.com/jinguoxing/af-go-frame/core/syncx"
     "crypto/tls"
     stdRedis "github.com/go-redis/redis/v8"
     "io"

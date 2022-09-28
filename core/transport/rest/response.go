@@ -1,8 +1,8 @@
 package rest
 
 import (
-    "af-go-frame/core/errorx/codes"
-    "af-go-frame/core/errorx/errors"
+    "github.com/jinguoxing/af-go-frame/core/errorx/codes"
+    "github.com/jinguoxing/af-go-frame/core/errorx/errors"
     "github.com/gin-gonic/gin"
 
     "net/http"
@@ -28,7 +28,7 @@ type DefaultHandlerResponse struct {
 // success Json Response
 func ResOkJson(c *gin.Context, message string, data interface{}) {
 
-    
+
     code := codes.CodeOK
 
     if message == "" {

@@ -1,7 +1,7 @@
 package syncx
 
 import (
-    "af-go-frame/core/errorx"
+    "github.com/jinguoxing/af-go-frame/core/errorx"
     "io"
     "sync"
 )

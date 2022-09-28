@@ -1,7 +1,7 @@
 package orm
 
 import (
-    "af-go-frame/core/store/mysql"
+    "github.com/jinguoxing/af-go-frame/core/store/mysql"
     "gorm.io/gorm"
 )
 

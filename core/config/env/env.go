@@ -4,7 +4,7 @@ import (
 	"os"
 	"strings"
 
-	"af-go-frame/core/config"
+	"github.com/jinguoxing/af-go-frame/core/config"
 )
 
 type env struct {

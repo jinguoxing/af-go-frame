@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/fsnotify/fsnotify"
-	"af-go-frame/core/config"
+	"github.com/jinguoxing/af-go-frame/core/config"
 )
 
 type watcher struct {

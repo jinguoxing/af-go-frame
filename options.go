@@ -1,8 +1,8 @@
 package af_go_frame
 
 import (
-    "af-go-frame/core/registry"
-    "af-go-frame/core/transport"
+    "github.com/jinguoxing/af-go-frame/core/registry"
+    "github.com/jinguoxing/af-go-frame/core/transport"
     "log"
     "net/url"
     "os"

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"reflect"
 
-	"af-go-frame/core/encoding"
+	"github.com/jinguoxing/af-go-frame/core/encoding"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )

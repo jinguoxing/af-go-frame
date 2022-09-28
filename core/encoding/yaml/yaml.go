@@ -1,7 +1,7 @@
 package yaml
 
 import (
-	"af-go-frame/core/encoding"
+	"github.com/jinguoxing/af-go-frame/core/encoding"
 	"gopkg.in/yaml.v3"
 )
 

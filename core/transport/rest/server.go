@@ -2,9 +2,9 @@ package rest
 
 import (
     "github.com/gin-gonic/gin"
-    "af-go-frame/core/internal/endpoint"
-    "af-go-frame/core/internal/host"
-    "af-go-frame/core/transport"
+    "github.com/jinguoxing/af-go-frame/core/internal/endpoint"
+    "github.com/jinguoxing/af-go-frame/core/internal/host"
+    "github.com/jinguoxing/af-go-frame/core/transport"
     "context"
     "crypto/tls"
     "errors"

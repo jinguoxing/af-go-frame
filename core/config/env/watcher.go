@@ -3,7 +3,7 @@ package env
 import (
 	"context"
 
-	"af-go-frame/core/config"
+	"github.com/jinguoxing/af-go-frame/core/config"
 )
 
 type watcher struct {

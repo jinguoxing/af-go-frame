@@ -1,7 +1,7 @@
 package errors
 
 import (
-    "af-go-frame/core/errorx/codes"
+    "github.com/jinguoxing/af-go-frame/core/errorx/codes"
     "fmt"
 )
 

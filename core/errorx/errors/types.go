@@ -1,6 +1,6 @@
 package errors
 
-import "af-go-frame/core/errorx/codes"
+import "github.com/jinguoxing/af-go-frame/core/errorx/codes"
 
 
 type ICode interface {

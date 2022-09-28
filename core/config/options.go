@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"af-go-frame/core/encoding"
+	"github.com/jinguoxing/af-go-frame/core/encoding"
 	"github.com/go-kratos/kratos/v2/log"
 )
 
