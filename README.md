@@ -1,5 +1,5 @@
 
-# Project Title
+# af-go-frame
 
 A brief description of what this project does and who it's for
 
@@ -14,8 +14,8 @@ A brief description of what this project does and who it's for
 ## Features
 
 - Light/dark mode toggle
-- Live previews
-- Fullscreen mode
+- rich components, out-of-the-box
+- simple and easy to use
 - Cross platform
 
 
@@ -27,7 +27,7 @@ A brief description of what this project does and who it's for
 To deploy this project run
 
 ```bash
-  npm run deploy
+
 ```
 
 
@@ -38,11 +38,10 @@ To deploy this project run
 
 ## Installation
 
-Install my-project with npm
+
 
 ```bash
-  npm install my-project
-  cd my-project
+  
 ```
     
 ## Lessons Learned

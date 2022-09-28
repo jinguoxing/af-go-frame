@@ -28,7 +28,7 @@ type DefaultHandlerResponse struct {
 // success Json Response
 func ResOkJson(c *gin.Context, message string, data interface{}) {
 
-    var msg string
+    
     code := codes.CodeOK
 
     if message == "" {
@@ -37,11 +37,7 @@ func ResOkJson(c *gin.Context, message string, data interface{}) {
         msg = message
     }
 
-    c.JSON(http.StatusOK, DefaultHandlerResponse{
-        code.ErrorCode(),
-        msg,
-        data,
-    })
+    c.JSON(http.StatusOK,data)
 }
 
 // failed Json Response

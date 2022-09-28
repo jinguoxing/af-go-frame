@@ -1,4 +1,4 @@
-module af-go-frame
+module github.com/jinguoxing/af-go-frame
 
 go 1.18
 
