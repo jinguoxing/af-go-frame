@@ -30,18 +30,16 @@ func ResOKJson(c *gin.Context, data interface{}) {
 }
 
 // failed Json Response
-func ResErrJson(c *gin.Context,err error) {
+func ResErrJson(c *gin.Context, err error) {
     var (
-        msg  string
+
         code = errors.Code(err)
     )
     if err != nil {
         if code == codes.CodeNil {
             code = codes.CodeInternalError
         }
-        msg = err.Error()
     } else if c.Writer.Status() > 0 && c.Writer.Status() != http.StatusOK {
-        msg = http.StatusText(c.Writer.Status())
         switch c.Writer.Status() {
         case http.StatusNotFound:
             code = codes.CodeNotFound
@@ -57,8 +55,8 @@ func ResErrJson(c *gin.Context,err error) {
     c.JSON(http.StatusOK, HttpError{
         Code:        code.GetErrorCode(),
         Description: code.GetDescription(),
-        Solution: code.GetSolution(),
-        Cause: code.GetCause(),
+        Solution:    code.GetSolution(),
+        Cause:       code.GetCause(),
     })
 }
 
