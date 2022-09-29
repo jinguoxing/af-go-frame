@@ -4,50 +4,69 @@ package codes
 type localCoder struct {
 
     // Error code, usually an integer.
-    errorCode int `json:"errorcode"`
-
-    // RPC/Http status that should be used for the associated error code.
-   // StatusCode int
-
+    ErrorCode string `json:"errorcode"`
     // Brief message for this error code.
-    errorMessage string
+    Description string `json:"description"`
+
+    // error cause
+    Cause string  `json:"cause"`
+
+    // error solution
+    Solution string
 
     // As type of interface, it is mainly designed as an extension field for error code.
-    errorDetail interface{}
+    ErrorDetails interface{}
 
     // Ref specify the reference document.
-    errorRef string
+    ErrorLink string
 
 }
 
 
+func newLocalCoder(code,description,cause,solution string) localCoder {
 
-func(c localCoder) ErrorCode() int {
-
-    return c.errorCode
+    return localCoder{
+        ErrorCode:code,
+        Description:description,
+        Cause:cause,
+        Solution:solution,
+    }
 }
 
 
-//func(c localCoder) Status() int{
-//
-//    return c.StatusCode
-//}
+func(c localCoder) GetErrorCode() string {
 
-func(c localCoder)Message() string{
-
-    return c.errorMessage
+    return c.ErrorCode
 }
 
 
-func (c localCoder) Detail() interface{} {
-    return c.errorDetail
+
+func(c localCoder)GetDescription() string{
+
+    return c.Description
+}
+
+func(c localCoder)GetCause() string{
+
+    return c.Cause
+}
+
+func(c localCoder)GetSolution() string{
+
+    return c.Solution
 }
 
 
-func (c localCoder) Reference() string {
-    return c.errorRef
+func(c localCoder) GetErrorDetails() interface{}{
+
+    return c.ErrorDetails
 }
 
+
+func(c localCoder)GetErrorLink() string{
+
+    return c.ErrorLink
+}
 
 
 

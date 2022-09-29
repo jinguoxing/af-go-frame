@@ -1,38 +1,36 @@
 package rest
 
 import (
+    "github.com/gin-gonic/gin"
     "github.com/jinguoxing/af-go-frame/core/errorx/codes"
     "github.com/jinguoxing/af-go-frame/core/errorx/errors"
-    "github.com/gin-gonic/gin"
 
     "net/http"
 )
 
-type  IResponse interface {
 
-    ResResponseJson() IResponse
+type HttpError struct {
 
-}
-
-
-
-type DefaultHandlerResponse struct {
-
-    Code int `json:"code"`
-    Message string  `json:"message"`
+    Code string `json:"code"`
+    Description string  `json:"description"`
+    Solution string  `json:"solution"`
+    Cause string  `json:"cause"`
+    Detail interface{}  `json:"detail,omitempty"`
     Data interface{}    `json:"data"`
-
 }
+
+
+
 
 
 // success Json Response
-func ResOKJson(c *gin.Context,  data interface{}) {
+func ResOKJson(c *gin.Context, data interface{}) {
 
-    c.JSON(http.StatusOK,data)
+    c.JSON(http.StatusOK, data)
 }
 
 // failed Json Response
-func ResErrJson(c *gin.Context,err error,message string, data interface{}) {
+func ResErrJson(c *gin.Context,err error) {
     var (
         msg  string
         code = errors.Code(err)
@@ -42,7 +40,7 @@ func ResErrJson(c *gin.Context,err error,message string, data interface{}) {
             code = codes.CodeInternalError
         }
         msg = err.Error()
-    } else if c.Writer.Status() > 0 && c.Writer.Status() > 0 {
+    } else if c.Writer.Status() > 0 && c.Writer.Status() != http.StatusOK {
         msg = http.StatusText(c.Writer.Status())
         switch c.Writer.Status() {
         case http.StatusNotFound:
@@ -50,16 +48,17 @@ func ResErrJson(c *gin.Context,err error,message string, data interface{}) {
         case http.StatusForbidden:
             code = codes.CodeNotAuthorized
         default:
-            code = codes.CodeUnknown
+            code = codes.CodeInternalError
         }
     } else {
         code = codes.CodeOK
     }
 
-    c.JSON(http.StatusOK, DefaultHandlerResponse{
-        code.ErrorCode(),
-        msg,
-        data,
+    c.JSON(http.StatusOK, HttpError{
+        Code:        code.GetErrorCode(),
+        Description: code.GetDescription(),
+        Solution: code.GetSolution(),
+        Cause: code.GetCause(),
     })
 }
 
