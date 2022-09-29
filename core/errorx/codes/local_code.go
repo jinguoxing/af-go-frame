@@ -4,7 +4,7 @@ package codes
 type localCoder struct {
 
     // Error code, usually an integer.
-    errorCode int
+    errorCode int `json:"errorcode"`
 
     // RPC/Http status that should be used for the associated error code.
    // StatusCode int

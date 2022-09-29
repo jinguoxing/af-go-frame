@@ -29,12 +29,27 @@ type DBConf struct {
     AllowNativePasswords bool `json:"allow_native_passwords"` // 是否允许nativePassword
 
     // 以下配置关于连接池
-    ConnMaxIdle     int    `json:"conn_max_idle"`     // 最大空闲连接数
-    ConnMaxOpen     int    `json:"conn_max_open"`     // 最大连接数
-    ConnMaxLifetime string `json:"conn_max_lifetime"` // 连接最大生命周期
-    ConnMaxIdletime string `json:"conn_max_idletime"` // 空闲最大生命周期
+    MaxIdleConnections     int    `json:"max-idle-connections,omitempty"`     // 最大空闲连接数
+    MaxOpenConnections     int    `json:"max-open-connections,omitempty"`     // 最大连接数
+    MaxConnectionLifeTime time.Duration `json:"max-connection-life-time,omitempty"` // 连接最大生命周期
+    MaxConnectionIdletime time.Duration `json:"conn_max_idletime"` // 空闲最大生命周期
 
 }
+
+// NewMySQLOptions create a `zero` value instance.
+func NewMySQLOptions() *DBConf{
+    return &DBConf{
+        Host:                  "127.0.0.1",
+        Port:                   3306,
+        Username:              "",
+        Password:              "",
+        Database:              "",
+        MaxIdleConnections:    30,
+        MaxOpenConnections:    30,
+        MaxConnectionLifeTime: time.Duration(10) * time.Second,
+    }
+}
+
 
 
 func (conf *DBConf) FormatDSN() (string, error) {

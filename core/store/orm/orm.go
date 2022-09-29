@@ -14,25 +14,15 @@ type AFGorm struct {
 
 
 
+func (s *AFGorm) GetDB(option ...ORMOption) (*gorm.DB, error) {
 
-
-
-
-
-
-
-func(s *AFGorm) GetDB(option ...ORMOption)(*gorm.DB,error){
-
-    config =
-
-    for _,opt := range option {
-
-        if err:= opt(config)
-
-    }
-
-
-
+    //dsn :=
+    //
+    //for _, opt := range option {
+    //
+    //    if err := opt(config)
+    //
+    //}
 
 }
 

@@ -9,7 +9,6 @@ type (
     OrmDBConf struct {
 
 
-
         // DB的基础配置
         *mysql.DBConf
         // gorm的配置

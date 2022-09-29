@@ -4,7 +4,6 @@ package codes
 type  Coder interface {
 
     ErrorCode() int
-   // StatusCode() int
     Message() string
     Reference() string
     Detail() interface{}

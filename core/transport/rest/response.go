@@ -26,16 +26,7 @@ type DefaultHandlerResponse struct {
 
 
 // success Json Response
-func ResOkJson(c *gin.Context, message string, data interface{}) {
-
-
-    code := codes.CodeOK
-
-    if message == "" {
-        msg = code.Message()
-    } else {
-        msg = message
-    }
+func ResOKJson(c *gin.Context,  data interface{}) {
 
     c.JSON(http.StatusOK,data)
 }
