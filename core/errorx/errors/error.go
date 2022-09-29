@@ -25,7 +25,7 @@ func(e *Error) Error() string {
     errStr := e.text
 
     if errStr =="" && e.code !=nil {
-        errStr = e.code.Message()
+        errStr = e.code.GetDescription()
     }
 
     if e.error != nil {
