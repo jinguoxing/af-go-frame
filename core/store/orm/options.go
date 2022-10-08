@@ -1,29 +1,60 @@
 package orm
 
+
 import (
-    "github.com/jinguoxing/af-go-frame/core/store/mysql"
+    "fmt"
+    "time"
+
+    "gorm.io/driver/mysql"
     "gorm.io/gorm"
+    "gorm.io/gorm/logger"
 )
 
-type (
-    OrmDBConf struct {
+// Options defines optsions for mysql database.
+type Options struct {
+    Host                  string
+    Username              string
+    Password              string
+    Database              string
+    MaxIdleConnections    int
+    MaxOpenConnections    int
+    MaxConnectionLifeTime time.Duration
+    LogLevel              int
+    Logger                logger.Interface
+}
 
+// New create a new gorm db instance with the given options.
+func New(opts *Options) (*gorm.DB, error) {
+    dsn := fmt.Sprintf(`%s:%s@tcp(%s)/%s?charset=utf8&parseTime=%t&loc=%s`,
+        opts.Username,
+        opts.Password,
+        opts.Host,
+        opts.Database,
+        true,
+        "Local")
 
-        // DB的基础配置
-        *mysql.DBConf
-        // gorm的配置
-        *gorm.Config
+    db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+        Logger: opts.Logger,
+    })
+    if err != nil {
+        return nil, err
     }
 
-    Option func(conf *OrmDBConf)
+    sqlDB, err := db.DB()
+    if err != nil {
+        return nil, err
+    }
 
+    // SetMaxOpenConns sets the maximum number of open connections to the database.
+    sqlDB.SetMaxOpenConns(opts.MaxOpenConnections)
 
-)
+    // SetConnMaxLifetime sets the maximum amount of time a connection may be reused.
+    sqlDB.SetConnMaxLifetime(opts.MaxConnectionLifeTime)
 
-type ORMOption func(config *OrmDBConf) error
+    // SetMaxIdleConns sets the maximum number of connections in the idle connection pool.
+    sqlDB.SetMaxIdleConns(opts.MaxIdleConnections)
 
-type ORMService interface {
-    GetDB(option ...ORMOption)
+    return db, nil
 }
 
 
