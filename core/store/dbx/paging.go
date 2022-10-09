@@ -3,9 +3,12 @@ package dbx
 
 type PaginationResult struct {
 
-    Offset int `json:"offset"`  // 页码
-    Limit int `json:"limit"` // 每页的条数
-    TotalCount int `json:"total_count"` //总数据条数
+    // 页码
+    Offset int `json:"offset"`
+    // 每页的条数
+    Limit int `json:"limit"`
+    //总行数
+    TotalCount int `json:"total_count"`
 }
 
 

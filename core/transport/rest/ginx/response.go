@@ -23,10 +23,24 @@ type HttpError struct {
 
 
 
+
 // success Json Response
 func ResOKJson(c *gin.Context, data interface{}) {
 
+    if data == nil {
+        data = gin.H{}
+    }
     c.JSON(http.StatusOK, data)
+}
+
+// list Response
+func ResList(c *gin.Context, list interface{},totalCount int){
+
+    c.JSON(http.StatusOK, gin.H{
+        "entries": list,
+        "total_count" : totalCount,
+    })
+
 }
 
 // failed Json Response

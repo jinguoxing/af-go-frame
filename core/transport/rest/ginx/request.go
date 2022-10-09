@@ -20,9 +20,11 @@ func ParseParamID(c *gin.Context, key string) uint64 {
     val := c.Param(key)
     id, err := strconv.ParseUint(val, 10, 64)
     if err != nil {
-        return 0
+        return -1
     }
     return id
 }
+
+
 
 
