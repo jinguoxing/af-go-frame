@@ -6,7 +6,7 @@ import (
     "github.com/go-playground/locales/en"
     "github.com/go-playground/locales/zh"
     "github.com/go-playground/locales/zh_Hant_TW"
-    "github.com/go-playground/universal-translator"
+    ut "github.com/go-playground/universal-translator"
     validator "github.com/go-playground/validator/v10"
     en_translations "github.com/go-playground/validator/v10/translations/en"
     zh_translations "github.com/go-playground/validator/v10/translations/zh"
