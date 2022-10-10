@@ -15,7 +15,7 @@ import (
 
 const (
     defaultModelSafe        = false
-    defaultCharset          = `utf8`
+    defaultCharset          = `utf8mb4`
     defaultMaxIdleConnCount = 10               // Max idle connection count in pool.
     defaultMaxOpenConnCount = 0                // Max open connection count in pool. Default is no limit.
     defaultMaxConnLifeTime  = 30 * time.Second // Max lifetime for per connection in pool in seconds.
@@ -27,11 +27,12 @@ func New(opts *Options) (*gorm.DB, error) {
 
     var dialector gorm.Dialector
 
-    dsn := fmt.Sprintf(`%s:%s@tcp(%s)/%s?charset=utf8&parseTime=%t&loc=%s`,
+    dsn := fmt.Sprintf(`%s:%s@tcp(%s)/%s?charset=%s&parseTime=%t&loc=%s`,
         opts.Username,
         opts.Password,
         opts.Host,
         opts.Database,
+        defaultCharset,
         true,
         "Local")
 
