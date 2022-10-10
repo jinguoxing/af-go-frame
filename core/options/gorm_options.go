@@ -1,6 +1,7 @@
 package options
 
 import (
+    "github.com/jinguoxing/af-go-frame/core/store/gormx"
     "github.com/jinguoxing/af-go-frame/core/store/orm"
     "gorm.io/gorm"
     "time"
@@ -8,6 +9,7 @@ import (
 
 // MySQLOptions defines options for mysql database.
 type MySQLOptions struct {
+    DBType                string        `json:"dbtype,omitempty"                   mapstructure:"db-type"`
     Host                  string        `json:"host,omitempty"                     mapstructure:"host"`
     Username              string        `json:"username,omitempty"                 mapstructure:"username"`
     Password              string        `json:"-"                                  mapstructure:"password"`
@@ -16,13 +18,15 @@ type MySQLOptions struct {
     MaxOpenConnections    int           `json:"max-open-connections,omitempty"     mapstructure:"max-open-connections"`
     MaxConnectionLifeTime time.Duration `json:"max-connection-life-time,omitempty" mapstructure:"max-connection-life-time"`
     LogLevel              int           `json:"log-level"                          mapstructure:"log-level"`
-}
+    IsDebug               bool          `json:"isdebug"                           mapstructure:"is-debug"`
+    TablePrefix           string        `json:"tableprefix"                       mapstructure:"table-prefix"`
 
+}
 
 
 // NewClient create mysql store with the given config.
 func (o *MySQLOptions) NewClient() (*gorm.DB, error) {
-    opts := &orm.Options{
+    opts := &gormx.Options{
         Host:                  o.Host,
         Username:              o.Username,
         Password:              o.Password,
@@ -33,5 +37,5 @@ func (o *MySQLOptions) NewClient() (*gorm.DB, error) {
         LogLevel:              o.LogLevel,
     }
 
-    return orm.New(opts)
+    return gormx.New(opts)
 }
