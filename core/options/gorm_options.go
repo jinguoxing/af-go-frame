@@ -7,8 +7,8 @@ import (
     "time"
 )
 
-// MySQLOptions defines options for mysql database.
-type MySQLOptions struct {
+// DBOptions defines options for  database.
+type DBOptions struct {
     DBType                string        `json:"dbtype,omitempty"                   mapstructure:"db-type"`
     Host                  string        `json:"host,omitempty"                     mapstructure:"host"`
     Username              string        `json:"username,omitempty"                 mapstructure:"username"`
@@ -25,8 +25,9 @@ type MySQLOptions struct {
 
 
 // NewClient create mysql store with the given config.
-func (o *MySQLOptions) NewClient() (*gorm.DB, error) {
+func (o *DBOptions) NewMySqlClient() (*gorm.DB, error) {
     opts := &gormx.Options{
+        DBType:     "mysql",
         Host:                  o.Host,
         Username:              o.Username,
         Password:              o.Password,
