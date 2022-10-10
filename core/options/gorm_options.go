@@ -2,7 +2,6 @@ package options
 
 import (
     "github.com/jinguoxing/af-go-frame/core/store/gormx"
-    "github.com/jinguoxing/af-go-frame/core/store/orm"
     "gorm.io/gorm"
     "time"
 )
