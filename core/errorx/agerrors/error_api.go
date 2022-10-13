@@ -5,6 +5,7 @@ import (
     "github.com/jinguoxing/af-go-frame/core/errorx/agcodes"
 )
 
+// New creates and returns an error which is formatted from given text.
 func New(s string) error {
 
     return &Error{
@@ -14,7 +15,8 @@ func New(s string) error {
     }
 }
 
-func Newf(format string, a ...interface{}) error {
+// New creates and returns an error that formats as the given format and args.
+func NewF(format string, a ...interface{}) error {
 
     return &Error{
         stack: callers(),
@@ -23,6 +25,7 @@ func Newf(format string, a ...interface{}) error {
     }
 }
 
+// Wrapf returns an error annotating err with a stack trace at the point Wrapf is called, and the format specifier.
 func Wrap(e error, s string) error {
 
     if e != nil {
