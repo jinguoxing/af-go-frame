@@ -2,16 +2,18 @@ package ginx
 
 import (
     "github.com/gin-gonic/gin"
+    "github.com/jinguoxing/af-go-frame/core/errorx/agcodes"
+    "github.com/jinguoxing/af-go-frame/core/errorx/agerrors"
     "net/http"
 )
 
 type HttpError struct {
     Code        string      `json:"code"`
     Description string      `json:"description"`
-    Solution    string      `json:"solution"`
-    Cause       string      `json:"cause"`
+    Solution    string      `json:"solution,omitempty"`
+    Cause       string      `json:"cause,omitempty"`
     Detail      interface{} `json:"detail,omitempty"`
-    Data        interface{} `json:"data"`
+    Data        interface{} `json:"data,omitempty"`
 }
 
 // success Json Response
@@ -61,5 +63,6 @@ func ResErrJson(c *gin.Context, err error) {
         Description: code.GetDescription(),
         Solution:    code.GetSolution(),
         Cause:       code.GetCause(),
+        Detail:      code.GetErrorDetails(),
     })
 }
