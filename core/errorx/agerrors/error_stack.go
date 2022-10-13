@@ -1,4 +1,4 @@
-package errors
+package agerrors
 
 import (
     "fmt"
@@ -108,8 +108,6 @@ const (
 
 type stack []uintptr
 
-
-
 // callers returns the stack callers.
 // Note that it here just retrieves the caller memory address array not the caller information.
 func callers(skip ...int) stack {
@@ -122,10 +120,3 @@ func callers(skip ...int) stack {
     }
     return pcs[:runtime.Callers(n, pcs[:])]
 }
-
-
-
-
-
-
-

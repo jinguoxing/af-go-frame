@@ -1,8 +1,6 @@
-package codes
+package agcodes
 
-
-type  Coder interface {
-
+type Coder interface {
     GetErrorCode() string
     GetDescription() string
     GetCause() string
@@ -11,7 +9,7 @@ type  Coder interface {
     GetErrorLink() string
 }
 
-
+// New creates and returns an error code.
 func New(errorCode, description, cause, solution string, detail interface{}, errLink string) Coder {
 
     return localCoder{
@@ -24,7 +22,7 @@ func New(errorCode, description, cause, solution string, detail interface{}, err
     }
 }
 
-
+// WithCode creates and returns a new error code based on given Code.
 func WithCode(code Coder, detail interface{}) Coder {
 
     return localCoder{
@@ -36,28 +34,3 @@ func WithCode(code Coder, detail interface{}) Coder {
         ErrorLink:    code.GetErrorLink(),
     }
 }
-
-
-
-func Register() {
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

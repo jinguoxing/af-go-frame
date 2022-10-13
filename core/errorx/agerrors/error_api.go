@@ -1,17 +1,16 @@
-package errors
+package agerrors
 
 import (
-    "github.com/jinguoxing/af-go-frame/core/errorx/codes"
     "fmt"
+    "github.com/jinguoxing/af-go-frame/core/errorx/agcodes"
 )
-
 
 func New(s string) error {
 
     return &Error{
         stack: callers(),
         text:  s,
-        code:  codes.CodeNil,
+        code:  agcodes.CodeNil,
     }
 }
 
@@ -20,13 +19,9 @@ func Newf(format string, a ...interface{}) error {
     return &Error{
         stack: callers(),
         text:  fmt.Sprintf(format, a...),
-        code:  codes.CodeNil,
+        code:  agcodes.CodeNil,
     }
 }
-
-
-
-
 
 func Wrap(e error, s string) error {
 
@@ -41,4 +36,3 @@ func Wrap(e error, s string) error {
         code:  Code(e),
     }
 }
-
