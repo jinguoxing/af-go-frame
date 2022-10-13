@@ -26,7 +26,7 @@ type DBOptions struct {
 // NewClient create mysql store with the given config.
 func (o *DBOptions) NewMySqlClient() (*gorm.DB, error) {
     opts := &gormx.Options{
-        DBType:     "mysql",
+        DBType:                o.DBType,
         Host:                  o.Host,
         Username:              o.Username,
         Password:              o.Password,
@@ -35,6 +35,8 @@ func (o *DBOptions) NewMySqlClient() (*gorm.DB, error) {
         MaxOpenConnections:    o.MaxOpenConnections,
         MaxConnectionLifeTime: o.MaxConnectionLifeTime,
         LogLevel:              o.LogLevel,
+        IsDebug:               o.IsDebug,
+        TablePrefix:           o.TablePrefix,
     }
 
     return gormx.New(opts)

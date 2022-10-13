@@ -90,7 +90,7 @@ func (s *Server) Start(ctx context.Context) error {
         return ctx
     }
 
-    fmt.Printf("[HTTP] server listening on: %s", s.lis.Addr().String())
+    fmt.Printf("[HTTP] server listening on: %s\n", s.lis.Addr().String())
     var err error
     if s.tlsConf != nil {
         err = s.ServeTLS(s.lis, "", "")

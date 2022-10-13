@@ -2,6 +2,8 @@ package ginx
 
 import (
     "github.com/gin-gonic/gin"
+    "github.com/jinguoxing/af-go-frame/core/errorx/agcodes"
+    "github.com/jinguoxing/af-go-frame/core/errorx/agerrors"
     "net/http"
 )
 
