@@ -1,30 +1,26 @@
 package rest
 
 import (
-    "github.com/gin-gonic/gin"
-    "github.com/jinguoxing/af-go-frame/core/internal/endpoint"
-    "github.com/jinguoxing/af-go-frame/core/internal/host"
-    "github.com/jinguoxing/af-go-frame/core/transport"
     "context"
     "crypto/tls"
     "errors"
     "fmt"
+    "github.com/gin-gonic/gin"
+    "github.com/jinguoxing/af-go-frame/core/internal/endpoint"
+    "github.com/jinguoxing/af-go-frame/core/internal/host"
+    "github.com/jinguoxing/af-go-frame/core/transport"
     "net"
     "net/http"
     "net/url"
     "time"
-
 )
 
 var (
-    _ transport.Server     = (*Server)(nil)
+    _ transport.Server = (*Server)(nil)
 )
-
 
 // ServerOption is an HTTP server option.
 type ServerOption func(*Server)
-
-
 
 // Address with server address.
 func Address(addr string) ServerOption {
@@ -34,15 +30,14 @@ func Address(addr string) ServerOption {
 }
 
 type Server struct {
-
     *http.Server
-    lis         net.Listener
-    tlsConf     *tls.Config
-    endpoint    *url.URL
-    err         error
-    network     string
-    address     string
-    timeout     time.Duration
+    lis      net.Listener
+    tlsConf  *tls.Config
+    endpoint *url.URL
+    err      error
+    network  string
+    address  string
+    timeout  time.Duration
     //filters     []FilterFunc
     //middleware  matcher.Matcher
     //dec         DecodeRequestFunc
@@ -51,14 +46,12 @@ type Server struct {
     strictSlash bool
 }
 
-
-
 // NewServer creates an HTTP server by options.
-func NewServer(r *gin.Engine,opts ...ServerOption) *Server {
+func NewServer(r *gin.Engine, opts ...ServerOption) *Server {
     srv := &Server{
-        network:     "tcp",
-        address:     ":0",
-        timeout:     1 * time.Second,
+        network: "tcp",
+        address: ":0",
+        timeout: 1 * time.Second,
         //middleware:  matcher.New(),
         //dec:         DefaultRequestDecoder,
         //enc:         DefaultResponseEncoder,
@@ -68,7 +61,7 @@ func NewServer(r *gin.Engine,opts ...ServerOption) *Server {
     for _, o := range opts {
         o(srv)
     }
-   // router := gin.Default()
+    // router := gin.Default()
     //srv.router = mux.NewRouter().StrictSlash(srv.strictSlash)
     //srv.router.NotFoundHandler = http.DefaultServeMux
     //srv.router.MethodNotAllowedHandler = http.DefaultServeMux
@@ -79,7 +72,6 @@ func NewServer(r *gin.Engine,opts ...ServerOption) *Server {
     }
     return srv
 }
-
 
 // Start start the HTTP server.
 func (s *Server) Start(ctx context.Context) error {
@@ -105,7 +97,7 @@ func (s *Server) Start(ctx context.Context) error {
     return nil
 }
 
-// Stop stop the HTTP server.
+// Stop  Close graceful shutdown the api server.
 func (s *Server) Stop(ctx context.Context) error {
     fmt.Print("[HTTP] server stopping")
     return s.Shutdown(ctx)

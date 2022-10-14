@@ -10,10 +10,10 @@ import (
 type HttpError struct {
     Code        string      `json:"code"`
     Description string      `json:"description"`
-    Solution    string      `json:"solution"`
-    Cause       string      `json:"cause"`
+    Solution    string      `json:"solution,omitempty"`
+    Cause       string      `json:"cause,omitempty"`
     Detail      interface{} `json:"detail,omitempty"`
-    Data        interface{} `json:"data"`
+    Data        interface{} `json:"data,omitempty"`
 }
 
 // success Json Response

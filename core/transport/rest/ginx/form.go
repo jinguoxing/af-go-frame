@@ -1,6 +1,5 @@
 package ginx
 
-
 import (
     "strings"
 
@@ -33,6 +32,7 @@ func (v ValidErrors) Errors() []string {
     return errs
 }
 
+//
 func BindAndValid(c *gin.Context, v interface{}) (bool, ValidErrors) {
     var errs ValidErrors
     err := c.ShouldBind(v)
@@ -44,7 +44,8 @@ func BindAndValid(c *gin.Context, v interface{}) (bool, ValidErrors) {
             return false, errs
         }
 
-        for key, value := range verrs.Translate(trans) {
+        vv := removeTopStruct(verrs.Translate(trans))
+        for key, value := range vv {
             errs = append(errs, &ValidError{
                 Key:     key,
                 Message: value,
@@ -55,4 +56,14 @@ func BindAndValid(c *gin.Context, v interface{}) (bool, ValidErrors) {
     }
 
     return true, nil
+}
+
+// removeTopStruct 去除字段名中的结构体名称标识
+// refer from:https://github.com/go-playground/validator/issues/633#issuecomment-654382345
+func removeTopStruct(fields map[string]string) map[string]string {
+    res := map[string]string{}
+    for field, err := range fields {
+        res[field[strings.Index(field, ".")+1:]] = err
+    }
+    return res
 }
