@@ -63,5 +63,6 @@ func ResErrJson(c *gin.Context, err error) {
         Description: code.GetDescription(),
         Solution:    code.GetSolution(),
         Cause:       code.GetCause(),
+        Detail:      code.GetErrorDetails(),
     })
 }
