@@ -1,10 +1,11 @@
 package af_go_frame
 
 import (
-    "github.com/jinguoxing/af-go-frame/core/registry"
     "context"
     "errors"
     "github.com/google/uuid"
+    baseOptions "github.com/jinguoxing/af-go-frame/core/options"
+    "github.com/jinguoxing/af-go-frame/core/registry"
     "golang.org/x/sync/errgroup"
     "os"
     "os/signal"
@@ -13,23 +14,22 @@ import (
     "time"
 )
 
-
 // AppInfo is application context value.
 type AppInfo interface {
     ID() string
     Name() string
-//    Version() string
-//    Metadata() map[string]string
-//Endpoint() []string
+    //    Version() string
+    //    Metadata() map[string]string
+    //Endpoint() []string
 }
 
 type App struct {
-    opts options
-    ctx      context.Context
-    cancel   func()
-    mu       sync.Mutex
-    instance *registry.ServiceInstance
-
+    opts       options
+    commonOpts baseOptions.CommonOptions
+    ctx        context.Context
+    cancel     func()
+    mu         sync.Mutex
+    instance   *registry.ServiceInstance
 }
 
 // New create an application lifecycle manager.
@@ -57,12 +57,11 @@ func New(opts ...Option) *App {
     }
 }
 
-
-func (a *App) ID() string{
+func (a *App) ID() string {
     return a.opts.id
 }
 
-func (a *App) Name() string{
+func (a *App) Name() string {
     return a.opts.name
 }
 
@@ -158,11 +157,11 @@ func (a *App) buildInstance() (*registry.ServiceInstance, error) {
     //    }
     //}
     return &registry.ServiceInstance{
-        ID:        a.opts.id,
-        Name:      a.opts.name,
+        ID:   a.opts.id,
+        Name: a.opts.name,
         //Version:   a.opts.version,
         //Metadata:  a.opts.metadata,
-       // Endpoints: endpoints,
+        // Endpoints: endpoints,
     }, nil
 }
 
@@ -178,5 +177,3 @@ func FromContext(ctx context.Context) (s AppInfo, ok bool) {
     s, ok = ctx.Value(appKey{}).(AppInfo)
     return
 }
-
-

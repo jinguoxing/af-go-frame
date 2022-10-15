@@ -1,17 +1,18 @@
 package af_go_frame
 
 import (
+    "context"
+    baseOptions "github.com/jinguoxing/af-go-frame/core/options"
     "github.com/jinguoxing/af-go-frame/core/registry"
     "github.com/jinguoxing/af-go-frame/core/transport"
     "log"
     "net/url"
     "os"
     "time"
-    "context"
 )
 
 type options struct {
-    id string
+    id   string
     name string
 
     endpoints []*url.URL
@@ -19,27 +20,28 @@ type options struct {
     ctx  context.Context
     sigs []os.Signal
 
+    baseOptions baseOptions.Options
+
     logger           log.Logger
     registrar        registry.Registrar
     registrarTimeout time.Duration
     stopTimeout      time.Duration
     servers          []transport.Server
-
 }
 
 type Option func(o *options)
 
-// 设置Server的ID
+//ID  设置Server的ID
 func ID(id string) Option {
-    
+
     return func(o *options) {
         o.id = id
     }
 }
 
 // 设置Server的Name
-func Name(name string) Option{
-    
+func Name(name string) Option {
+
     return func(o *options) {
         o.name = name
     }
@@ -50,7 +52,6 @@ func Endpoint(endpoints ...*url.URL) Option {
     return func(o *options) { o.endpoints = endpoints }
 }
 
-
 // Context with service context.
 func Context(ctx context.Context) Option {
     return func(o *options) { o.ctx = ctx }
@@ -59,6 +60,13 @@ func Context(ctx context.Context) Option {
 // Logger with service logger.
 func Logger(logger log.Logger) Option {
     return func(o *options) { o.logger = logger }
+}
+
+func BaseOptions(b baseOptions.Options) Option {
+
+    return func(o *options) {
+        o.baseOptions = b
+    }
 }
 
 // Server with transport servers.
