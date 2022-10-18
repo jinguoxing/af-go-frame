@@ -13,7 +13,6 @@ type HttpError struct {
     Solution    string      `json:"solution"`
     Cause       string      `json:"cause"`
     Detail      interface{} `json:"detail,omitempty"`
-    Data        interface{} `json:"data"`
 }
 
 // success Json Response
@@ -53,5 +52,6 @@ func ResErrJson(c *gin.Context, err error) {
         Description: code.GetDescription(),
         Solution:    code.GetSolution(),
         Cause:       code.GetCause(),
+        Detail:      code.GetErrorDetails(),
     })
 }
