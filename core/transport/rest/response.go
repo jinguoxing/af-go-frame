@@ -2,6 +2,8 @@ package rest
 
 import (
     "github.com/gin-gonic/gin"
+    "github.com/jinguoxing/af-go-frame/core/errorx/agcodes"
+    "github.com/jinguoxing/af-go-frame/core/errorx/agerrors"
     "net/http"
 )
 
@@ -23,26 +25,30 @@ func ResOKJson(c *gin.Context, data interface{}) {
 // failed Json Response
 func ResErrJson(c *gin.Context, err error) {
     var (
-        code = agerrors.Code(err)
+        code       = agerrors.Code(err)
+        statusCode = 400
     )
     if err != nil {
         if code == agcodes.CodeNil {
             code = agcodes.CodeInternalError
         }
     } else if c.Writer.Status() > 0 && c.Writer.Status() != http.StatusOK {
-        switch c.Writer.Status() {
-        case http.StatusNotFound:
-            code = agcodes.CodeNotFound
-        case http.StatusForbidden:
-            code = agcodes.CodeNotAuthorized
-        default:
-            code = agcodes.CodeInternalError
-        }
+        //switch c.Writer.Status() {
+        //case http.StatusNotFound:
+        //    code = agcodes.CodeNotFound
+        //case http.StatusForbidden:
+        //    code = agcodes.CodeNotAuthorized
+        //
+        //default:
+        //    code = agcodes.CodeInternalError
+        //}
+        statusCode = c.Writer.Status()
     } else {
         code = agcodes.CodeOK
+        statusCode = 200
     }
 
-    c.JSON(http.StatusOK, HttpError{
+    c.JSON(statusCode, HttpError{
         Code:        code.GetErrorCode(),
         Description: code.GetDescription(),
         Solution:    code.GetSolution(),
