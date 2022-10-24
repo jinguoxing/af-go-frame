@@ -11,7 +11,7 @@ type DBOptions struct {
     DBType                string        `json:"dbtype,omitempty"                   mapstructure:"db-type"`
     Host                  string        `json:"host,omitempty"                     mapstructure:"host"`
     Username              string        `json:"username,omitempty"                 mapstructure:"username"`
-    Password              string        `json:"-"                                  mapstructure:"password"`
+    Password              string        `json:"password"                           mapstructure:"password"`
     Database              string        `json:"database"                           mapstructure:"database"`
     MaxIdleConnections    int           `json:"max-idle-connections,omitempty"     mapstructure:"max-idle-connections"`
     MaxOpenConnections    int           `json:"max-open-connections,omitempty"     mapstructure:"max-open-connections"`
