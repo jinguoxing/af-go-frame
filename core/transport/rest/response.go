@@ -32,20 +32,21 @@ func ResErrJson(c *gin.Context, err error) {
             code = agcodes.CodeInternalError
         }
     } else if c.Writer.Status() > 0 && c.Writer.Status() != http.StatusOK {
-        //switch c.Writer.Status() {
-        //case http.StatusNotFound:
-        //    code = agcodes.CodeNotFound
-        //case http.StatusForbidden:
-        //    code = agcodes.CodeNotAuthorized
-        //
-        //default:
-        //    code = agcodes.CodeInternalError
-        //}
-        statusCode = c.Writer.Status()
+        switch c.Writer.Status() {
+        case http.StatusNotFound:
+            code = agcodes.CodeNotFound
+        case http.StatusForbidden:
+            code = agcodes.CodeNotAuthorized
+        default:
+            code = agcodes.CodeInternalError
+        }
+
     } else {
         code = agcodes.CodeOK
         statusCode = 200
     }
+
+    statusCode = c.Writer.Status()
 
     c.JSON(statusCode, HttpError{
         Code:        code.GetErrorCode(),
