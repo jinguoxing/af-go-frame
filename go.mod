@@ -24,6 +24,7 @@ require (
 	github.com/go-playground/locales v0.14.0
 	github.com/go-playground/universal-translator v0.18.0
 	github.com/go-playground/validator/v10 v10.10.0
+	github.com/spf13/pflag v1.0.5
 	gorm.io/driver/mysql v1.4.1
 	gorm.io/driver/postgres v1.4.4
 	gorm.io/driver/sqlite v1.4.2
