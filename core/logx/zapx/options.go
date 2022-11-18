@@ -1,123 +1,164 @@
 package zapx
 
 import (
-    "encoding/json"
-    "fmt"
-    "strings"
-
-    "go.uber.org/zap"
-    "go.uber.org/zap/zapcore"
+	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	"os"
+	"strings"
 )
 
 const (
-    flagLevel             = "log.level"
-    flagDisableCaller     = "log.disable-caller"
-    flagDisableStacktrace = "log.disable-stacktrace"
-    flagFormat            = "log.format"
-    flagEnableColor       = "log.enable-color"
-    flagOutputPaths       = "log.output-paths"
-    flagErrorOutputPaths  = "log.error-output-paths"
-    flagDevelopment       = "log.development"
-    flagName              = "log.name"
-
-    consoleFormat = "console"
-    jsonFormat    = "json"
+	KB = 1024
+	MB = 1024 * KB
+	GB = 1024 * MB
+)
+const (
+	DefaultFileNameFormat = "-%Y-%m-%d.log"
+	DefaultLogName        = "zap"
 )
 
-// Options contains configuration items related to log.
+const (
+	ConsoleFormat = "console"
+	JsonFormat    = "json"
+)
+const (
+	ConsoleDestination = "stdout"
+)
+const (
+	ZapxCallerSkip    = 1
+	ProjectCallerSkip = 2
+)
+
 type Options struct {
-    OutputPaths       []string `json:"output-paths"       mapstructure:"output-paths"`
-    ErrorOutputPaths  []string `json:"error-output-paths" mapstructure:"error-output-paths"`
-    Level             string   `json:"level"              mapstructure:"level"`
-    Format            string   `json:"format"             mapstructure:"format"`
-    DisableCaller     bool     `json:"disable-caller"     mapstructure:"disable-caller"`
-    DisableStacktrace bool     `json:"disable-stacktrace" mapstructure:"disable-stacktrace"`
-    EnableColor       bool     `json:"enable-color"       mapstructure:"enable-color"`
-    Development       bool     `json:"development"        mapstructure:"development"`
-    Name              string   `json:"name"               mapstructure:"name"`
+	Name            string        `json:"name"               mapstructure:"name"`
+	EnableCaller    bool          `json:"enable-caller"     mapstructure:"enable-caller"`
+	CallerSkip      int           `json:"caller-skip"        mapstructure:"caller-skip"`
+	StacktraceLevel zapcore.Level `json:"disable-stacktrace" mapstructure:"disable-stacktrace"`
+	Development     bool          `json:"development"        mapstructure:"development"`
+	CoreConfigs     []CoreConfig  `json:"core-configs"       mapstructure:"core-configs"`
 }
 
-// NewOptions creates an Options object with default parameters.
-func NewOptions() *Options {
-    return &Options{
-        Level:             zapcore.InfoLevel.String(),
-        DisableCaller:     false,
-        DisableStacktrace: false,
-        Format:            consoleFormat,
-        EnableColor:       false,
-        Development:       false,
-        OutputPaths:       []string{"stdout"},
-        ErrorOutputPaths:  []string{"stderr"},
-    }
+type CoreConfig struct {
+	RotateSize  int64                `json:"rotate_size" mapstructure:"rotate_size"`
+	Destination string               `json:"destination" mapstructure:"destination"`
+	Format      string               `json:"format" mapstructure:"format"`
+	LogLevel    zap.LevelEnablerFunc `json:"log_level" mapstructure:"log_level"`
 }
 
-// Validate validate the options fields.
-func (o *Options) Validate() []error {
-    var errs []error
-
-    var zapLevel zapcore.Level
-    if err := zapLevel.UnmarshalText([]byte(o.Level)); err != nil {
-        errs = append(errs, err)
-    }
-
-    format := strings.ToLower(o.Format)
-    if format != consoleFormat && format != jsonFormat {
-        errs = append(errs, fmt.Errorf("not a valid log format: %q", o.Format))
-    }
-
-    return errs
+func DefaultInfoLevel() zap.LevelEnablerFunc {
+	return zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl >= zapcore.InfoLevel && lvl <= zapcore.WarnLevel
+	})
 }
 
-func (o *Options) String() string {
-    data, _ := json.Marshal(o)
-
-    return string(data)
+func DefaultErrorLevel() zap.LevelEnablerFunc {
+	return zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl >= zapcore.ErrorLevel && lvl <= zapcore.FatalLevel
+	})
 }
 
-// Build constructs a global zap logger from the Config and Options.
-func (o *Options) Build() error {
-    var zapLevel zapcore.Level
-    if err := zapLevel.UnmarshalText([]byte(o.Level)); err != nil {
-        zapLevel = zapcore.InfoLevel
-    }
-    encodeLevel := zapcore.CapitalLevelEncoder
-    if o.Format == consoleFormat && o.EnableColor {
-        encodeLevel = zapcore.CapitalColorLevelEncoder
-    }
+func DefaultConsoleLevel() zap.LevelEnablerFunc {
+	return zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl >= zapcore.InfoLevel
+	})
+}
 
-    zc := &zap.Config{
-        Level:             zap.NewAtomicLevelAt(zapLevel),
-        Development:       o.Development,
-        DisableCaller:     o.DisableCaller,
-        DisableStacktrace: o.DisableStacktrace,
-        Sampling: &zap.SamplingConfig{
-            Initial:    100,
-            Thereafter: 100,
-        },
-        Encoding: o.Format,
-        EncoderConfig: zapcore.EncoderConfig{
-            MessageKey:     "message",
-            LevelKey:       "level",
-            TimeKey:        "timestamp",
-            NameKey:        "logger",
-            CallerKey:      "caller",
-            StacktraceKey:  "stacktrace",
-            LineEnding:     zapcore.DefaultLineEnding,
-            EncodeLevel:    encodeLevel,
-            EncodeTime:     timeEncoder,
-            EncodeDuration: milliSecondsDurationEncoder,
-            EncodeCaller:   zapcore.ShortCallerEncoder,
-            EncodeName:     zapcore.FullNameEncoder,
-        },
-        OutputPaths:      o.OutputPaths,
-        ErrorOutputPaths: o.ErrorOutputPaths,
-    }
-    logger, err := zc.Build(zap.AddStacktrace(zapcore.PanicLevel))
-    if err != nil {
-        return err
-    }
-    zap.RedirectStdLog(logger.Named(o.Name))
-    zap.ReplaceGlobals(logger)
+func (opts Options) NewZapLogger() *zapLogger {
+	cores := make([]zapcore.Core, 0)
+	for _, cfg := range opts.CoreConfigs {
+		cores = append(cores, cfg.newCore())
+	}
+	core := zapcore.NewTee(cores...)
+	options := make([]zap.Option, 0)
 
-    return nil
+	if opts.Development {
+		options = append(options, zap.Development())
+	}
+	if opts.StacktraceLevel >= 0 {
+		options = append(options, zap.AddStacktrace(opts.StacktraceLevel))
+	}
+	if opts.EnableCaller {
+		options = append(options, zap.AddCaller(), zap.AddCallerSkip(opts.CallerSkip))
+	}
+
+	l := zap.New(core, options...)
+	logger := &zapLogger{
+		zapLogger: l.Named(opts.Name),
+		infoLogger: infoLogger{
+			log:   l,
+			level: zap.InfoLevel,
+		},
+	}
+	zap.RedirectStdLog(l)
+	return logger
+}
+
+func NewDefaultOptions() Options {
+	infoConfig := CoreConfig{
+		RotateSize:  10 * MB,
+		Destination: "logs/info.log",
+		Format:      JsonFormat,
+		LogLevel:    DefaultInfoLevel(),
+	}
+	errorConfig := CoreConfig{
+		RotateSize:  10 * MB,
+		Destination: "logs/error.log",
+		Format:      ConsoleFormat,
+		LogLevel:    DefaultErrorLevel(),
+	}
+	consoleConfig := CoreConfig{
+		RotateSize:  10 * MB,
+		Destination: ConsoleDestination,
+		Format:      ConsoleFormat,
+		LogLevel:    DefaultConsoleLevel(),
+	}
+	return Options{
+		Name:            DefaultLogName,
+		EnableCaller:    true,
+		CallerSkip:      ZapxCallerSkip,
+		Development:     true,
+		StacktraceLevel: PanicLevel,
+		CoreConfigs:     []CoreConfig{infoConfig, errorConfig, consoleConfig},
+	}
+}
+
+func (c CoreConfig) newEncoder() zapcore.Encoder {
+	encoderConfig := zapcore.EncoderConfig{
+		MessageKey:     "message",
+		LevelKey:       "level",
+		TimeKey:        "timestamp",
+		NameKey:        "logger",
+		CallerKey:      "caller",
+		StacktraceKey:  "stacktrace",
+		LineEnding:     zapcore.DefaultLineEnding,
+		EncodeLevel:    zapcore.CapitalLevelEncoder,
+		EncodeTime:     timeEncoder,
+		EncodeDuration: milliSecondsDurationEncoder,
+		EncodeCaller:   zapcore.ShortCallerEncoder,
+	}
+	// when output to local path, with color is forbidden
+	if c.Format == ConsoleFormat {
+		encoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+		return zapcore.NewConsoleEncoder(encoderConfig)
+	}
+	return zapcore.NewJSONEncoder(encoderConfig)
+}
+
+func (c CoreConfig) newWriteSyncer() zapcore.WriteSyncer {
+	switch c.Destination {
+	case ConsoleDestination:
+		return zapcore.Lock(os.Stdout)
+	default:
+		hook, _ := rotatelogs.New(
+			strings.Replace(c.Destination, ".log", "", -1)+DefaultFileNameFormat,
+			rotatelogs.WithLinkName(c.Destination),
+			rotatelogs.WithRotationSize(c.RotateSize),
+		)
+		return zapcore.AddSync(hook)
+	}
+}
+
+func (c CoreConfig) newCore() zapcore.Core {
+	return zapcore.NewCore(c.newEncoder(), zapcore.AddSync(c.newWriteSyncer()), c.LogLevel)
 }
