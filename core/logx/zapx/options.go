@@ -95,20 +95,7 @@ func (opts Options) NewZapLogger() *zapLogger {
 }
 
 func NewDefaultOptions() Options {
-	infoConfig := CoreConfig{
-		RotateSize:  10 * MB,
-		Destination: "logs/info.log",
-		Format:      JsonFormat,
-		LogLevel:    DefaultInfoLevel(),
-	}
-	errorConfig := CoreConfig{
-		RotateSize:  10 * MB,
-		Destination: "logs/error.log",
-		Format:      ConsoleFormat,
-		LogLevel:    DefaultErrorLevel(),
-	}
 	consoleConfig := CoreConfig{
-		RotateSize:  10 * MB,
 		Destination: ConsoleDestination,
 		Format:      ConsoleFormat,
 		LogLevel:    DefaultConsoleLevel(),
@@ -119,7 +106,7 @@ func NewDefaultOptions() Options {
 		CallerSkip:      ZapxCallerSkip,
 		Development:     true,
 		StacktraceLevel: PanicLevel,
-		CoreConfigs:     []CoreConfig{infoConfig, errorConfig, consoleConfig},
+		CoreConfigs:     []CoreConfig{consoleConfig},
 	}
 }
 
