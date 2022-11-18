@@ -1,68 +1,69 @@
 package zapx
 
 import (
-    "fmt"
-    "github.com/zeromicro/go-zero/core/logx"
-    "go.uber.org/zap"
+	"fmt"
+	"github.com/zeromicro/go-zero/core/logx"
+	"go.uber.org/zap"
 )
 
-const callerSkipOffset = 3
-
 type ZapWriter struct {
-    logger *zap.Logger
+	zapLogger *zap.Logger
 }
 
-func NewZapWriter(opts ...zap.Option) (logx.Writer, error) {
-    opts = append(opts, zap.AddCallerSkip(callerSkipOffset))
-
-    logger, err := zap.NewProduction(opts...)
-    if err != nil {
-        return nil, err
-    }
-
-    return &ZapWriter{
-        logger: logger,
-    },nil
+func NewZapWriter(logger zapLogger) *ZapWriter {
+	return &ZapWriter{
+		zapLogger: logger.zapLogger,
+	}
 }
 
-
-
-func (w *ZapWriter) Alert(v interface{}) {
-    w.logger.Error(fmt.Sprint(v))
+//"github.com/zeromicro/go-zero/core/logx"
+// the blow method  implement the logx.Writer
+//Writer interface {
+//		Alert(v interface{})
+//		Close() error
+//		Error(v interface{}, fields ...LogField)
+//		Info(v interface{}, fields ...LogField)
+//		Severe(v interface{})
+//		Slow(v interface{}, fields ...LogField)
+//		Stack(v interface{})
+//		Stat(v interface{}, fields ...LogField)
+//	}
+func (z *ZapWriter) Alert(v interface{}) {
+	z.zapLogger.Error(fmt.Sprint(v))
 }
 
-func (w *ZapWriter) Close() error {
-    return w.logger.Sync()
+func (z *ZapWriter) Close() error {
+	return z.zapLogger.Sync()
 }
 
-func (w *ZapWriter) Error(v interface{}, fields ...logx.LogField) {
-    w.logger.Error(fmt.Sprint(v), toZapFields(fields...)...)
+func (z *ZapWriter) Error(v interface{}, fields ...logx.LogField) {
+	z.zapLogger.Error(fmt.Sprint(v), toZapFields(fields...)...)
 }
 
-func (w *ZapWriter) Info(v interface{}, fields ...logx.LogField) {
-    w.logger.Info(fmt.Sprint(v), toZapFields(fields...)...)
+func (z *ZapWriter) Info(v interface{}, fields ...logx.LogField) {
+	z.zapLogger.Info(fmt.Sprint(v), toZapFields(fields...)...)
 }
 
-func (w *ZapWriter) Severe(v interface{}) {
-    w.logger.Fatal(fmt.Sprint(v))
+func (z *ZapWriter) Severe(v interface{}) {
+	z.zapLogger.Fatal(fmt.Sprint(v))
 }
 
-func (w *ZapWriter) Slow(v interface{}, fields ...logx.LogField) {
-    w.logger.Warn(fmt.Sprint(v), toZapFields(fields...)...)
+func (z *ZapWriter) Slow(v interface{}, fields ...logx.LogField) {
+	z.zapLogger.Warn(fmt.Sprint(v), toZapFields(fields...)...)
 }
 
-func (w *ZapWriter) Stack(v interface{}) {
-    w.logger.Error(fmt.Sprint(v), zap.Stack("stack"))
+func (z *ZapWriter) Stack(v interface{}) {
+	z.zapLogger.Error(fmt.Sprint(v), zap.Stack("stack"))
 }
 
-func (w *ZapWriter) Stat(v interface{}, fields ...logx.LogField) {
-    w.logger.Info(fmt.Sprint(v), toZapFields(fields...)...)
+func (z *ZapWriter) Stat(v interface{}, fields ...logx.LogField) {
+	z.zapLogger.Info(fmt.Sprint(v), toZapFields(fields...)...)
 }
 
 func toZapFields(fields ...logx.LogField) []zap.Field {
-    zapFields := make([]zap.Field, 0, len(fields))
-    for _, f := range fields {
-        zapFields = append(zapFields, zap.Any(f.Key, f.Value))
-    }
-    return zapFields
+	zapFields := make([]zap.Field, 0, len(fields))
+	for _, f := range fields {
+		zapFields = append(zapFields, zap.Any(f.Key, f.Value))
+	}
+	return zapFields
 }
