@@ -6,16 +6,7 @@ import (
 	"go.uber.org/zap"
 )
 
-type ZapWriter struct {
-	zapLogger *zap.Logger
-}
-
-func NewZapWriter(logger zapLogger) *ZapWriter {
-	return &ZapWriter{
-		zapLogger: logger.zapLogger,
-	}
-}
-
+//ZapWriter
 //"github.com/zeromicro/go-zero/core/logx"
 // the blow method  implement the logx.Writer
 //Writer interface {
@@ -28,6 +19,8 @@ func NewZapWriter(logger zapLogger) *ZapWriter {
 //		Stack(v interface{})
 //		Stat(v interface{}, fields ...LogField)
 //	}
+type ZapWriter zapLogger
+
 func (z *ZapWriter) Alert(v interface{}) {
 	z.zapLogger.Error(fmt.Sprint(v))
 }

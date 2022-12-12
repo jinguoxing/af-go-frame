@@ -29,21 +29,24 @@ func Load() {
 	}
 }
 
-func Scan(data interface{}, keys ...string) {
+//Scan any type
+func Scan[T any](keys ...string) T {
 	key := ""
 	if len(keys) > 0 && keys[0] != "" {
 		key = keys[0]
 	}
+	var data T
 	if key == "" {
-		if err := manager.Config.Scan(data); err != nil {
+		if err := manager.Config.Scan(&data); err != nil {
 			panic(err)
 		}
-		return
+		return data
 	}
 	value := manager.Config.Value(key)
 	if err := value.Scan(data); err != nil {
 		panic(err)
 	}
+	return data
 }
 
 func GetValue(key string) Value {
