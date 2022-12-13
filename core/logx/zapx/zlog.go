@@ -115,6 +115,10 @@ func ZapLogger() *zap.Logger {
 	return std.zapLogger
 }
 
+func DefaultLogger() Logger {
+	return std
+}
+
 // FromContext returns the value of the log key on the ctx.
 func FromContext(ctx context.Context) Logger {
 	if ctx != nil {
