@@ -3,6 +3,7 @@ package zapx
 import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"time"
 )
 
 // Defines common log fields.
@@ -14,28 +15,6 @@ const (
 
 // Field is an alias for the field structure in the underlying log frame.
 type Field = zapcore.Field
-
-// Level is an alias for the level structure in the underlying log frame.
-type Level = zapcore.Level
-
-var (
-	DisableLevel = zapcore.Level(-1)
-	// DebugLevel logs are typically voluminous, and are usually disabled in
-	// production.
-	DebugLevel = zapcore.DebugLevel
-	// InfoLevel is the default logging priority.
-	InfoLevel = zapcore.InfoLevel
-	// WarnLevel logs are more important than Info, but don't need individual
-	// human review.
-	WarnLevel = zapcore.WarnLevel
-	// ErrorLevel logs are high-priority. If an application is running smoothly,
-	// it shouldn't generate any error-level logs.
-	ErrorLevel = zapcore.ErrorLevel
-	// PanicLevel logs a message, then panics.
-	PanicLevel = zapcore.PanicLevel
-	// FatalLevel logs a message, then calls os.Exit(1).
-	FatalLevel = zapcore.FatalLevel
-)
 
 // Alias for zap type functions.
 var (
@@ -90,3 +69,11 @@ var (
 	Uintptr     = zap.Uintptr
 	Uintptrs    = zap.Uintptrs
 )
+
+func timeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
+	enc.AppendString(t.Format("2006-01-02 15:04:05.000"))
+}
+
+func milliSecondsDurationEncoder(d time.Duration, enc zapcore.PrimitiveArrayEncoder) {
+	enc.AppendFloat64(float64(d) / float64(time.Millisecond))
+}

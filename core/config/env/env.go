@@ -12,6 +12,10 @@ type env struct {
 }
 
 func NewSource(prefixs ...string) config.Source {
+	prefix := os.Getenv(config.ProjectPrefix)
+	if prefix != "" && len(prefixs) <= 0 {
+		prefixs = strings.Split(prefix, ";")
+	}
 	return &env{prefixs: prefixs}
 }
 

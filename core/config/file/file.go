@@ -1,6 +1,7 @@
 package file
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -17,7 +18,7 @@ type file struct {
 
 // NewSource new a file source.
 func NewSource(path string) config.Source {
-	return &file{path: path}
+	return &file{path: appendEnv(path)}
 }
 
 func (f *file) loadFile(path string) (*config.KeyValue, error) {
@@ -77,4 +78,25 @@ func (f *file) Load() (kvs []*config.KeyValue, err error) {
 
 func (f *file) Watch() (config.Watcher, error) {
 	return newWatcher(f)
+}
+
+func projectEnv() string {
+	env, has := os.LookupEnv(config.ProjectEnvKey)
+	if has {
+		return strings.ToLower(env)
+	}
+	return ""
+}
+
+//appendEnv  根据项目的环境，给出不同的
+func appendEnv(path string) string {
+	env := projectEnv()
+	if env == "" {
+		return path
+	}
+	pos := strings.LastIndex(path, ".")
+	if pos < 0 {
+		return fmt.Sprintf("%s_%s", path, env)
+	}
+	return fmt.Sprintf("%s_%s%s", path[:pos], env, path[pos:])
 }
