@@ -1,92 +1,41 @@
 
-# af-go-frame
+Translate to: [English](README.md) | [简体中文](README_zh.md)
 
-A brief description of what this project does and who it's for
+# Af-Go-Frame
+af-go-frame is a light wight Go microservices framework base on Gin, And integrated library of all modern web application frameworks, making it a breeze to get started with the framework.
+
+## Goals
+we dedicated to boosts your productivity. With the integration of excellent resources and further support, programmers can get rid of most issues might encounter in the field of distributed systems and software engineering such that they are allowed to focus on the release of businesses only.
 
 
-## Acknowledgements
+### Principles
+* **Simple**: Appropriate design with plain and easy code.
+* **General**: Cover the various utilities for business development.
+* **Highly efficient**: Speeding up the efficiency of businesses upgrading.
+* **Stable**: The base libs validated in the production environment have the characteristics of high testability, high coverage as well as high security and reliability.
+* **Robust**: Eliminating misusing through high quality of the base libs.
+* **High-performance**: Optimal performance, with zap logger insider
+* **Expandability**: Properly designed interfaces where you can expand utilities such as base libs to meet your further requirements.
+* **Fault-tolerance**: Designed against failure, enhance the understanding and exercising of SRE within Kratos to achieve more robustness.
+* **Toolchain**: Includes an extensive toolchain.
 
- - [Awesome Readme Templates](https://awesomeopensource.com/project/elangosundar/awesome-README-templates)
- - [Awesome README](https://github.com/matiassingers/awesome-readme)
- - [How to write a Good readme](https://bulldogjob.com/news/449-how-to-write-a-good-readme-for-your-github-project)
 
 
 ## Features
-
-- Light/dark mode toggle
-- rich components, out-of-the-box
-- simple and easy to use
-- Cross platform
+* [Config](docs/component/config.md) ：support multi config source, multi config file
+* [Logger](docs/component/logger.md) ：standard Log interface, Base on zap
 
 
-![Logo](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/th5xamgrr6se0x5ro4g6.png)
+## Getting Started
 
+### Dependency
+- [Go>=1.18](https://golang.org/dl/)
 
-## Deployment
+we provide demo project blow:
+* [af-goframe-demo](https://github.com/jinguoxing/af-goframe-demo)
 
-To deploy this project run
-
-```bash
-
-```
-
-
-## Documentation
-
-[Documentation](https://linktodocumentation)
-
-
-## Installation
-
-
-
-```bash
-  
-```
-    
-## Lessons Learned
-
-What did you learn while building this project? What challenges did you face and how did you overcome them?
-
-
-## Support
-
-For support, email fake@fake.com or join our Slack channel.
-
-
-## Usage/Examples
-
-```go
-
-```
-
-
-## FAQ
-
-#### Question 1
-
-Answer 1
-
-#### Question 2
-
-Answer 2
-
-
-## Authors
-
-- [@jinguoxing](https://www.github.com/jinguoxing)
-
-
-## Contributing
-
-Contributions are always welcome!
-
-See `contributing.md` for ways to get started.
-
-Please adhere to this project's `code of conduct`.
 
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
-
+The Kratos framework is open-sourced software licensed under the [MIT license](./LICENSE).
