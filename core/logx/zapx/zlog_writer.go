@@ -21,6 +21,12 @@ import (
 //	}
 type ZapWriter zapLogger
 
+func NewZapWriter(name string) *ZapWriter {
+	requestLogger := GetLogger(name)
+	writerInstance := ZapWriter(*requestLogger)
+	return &writerInstance
+}
+
 func (z *ZapWriter) Alert(v interface{}) {
 	z.zapLogger.Error(fmt.Sprint(v))
 }

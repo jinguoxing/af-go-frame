@@ -43,7 +43,7 @@ func Scan[T any](keys ...string) T {
 		return data
 	}
 	value := manager.Config.Value(key)
-	if err := value.Scan(data); err != nil {
+	if err := value.Scan(&data); err != nil {
 		panic(err)
 	}
 	return data
