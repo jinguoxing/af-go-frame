@@ -13,8 +13,6 @@ import (
 var pwd string = "."
 
 func init() {
-	os.Setenv(config.ProjectEnvKey, "DEV")
-
 	var abPath string
 	_, filename, _, ok := runtime.Caller(0)
 	if ok {
@@ -47,9 +45,11 @@ func InitSources(paths ...string) {
 }
 
 func main() {
-	InitSources("config.yaml")
+	os.Setenv(config.ProjectEnvKey, "dev")
+	configPath := pwd + "/" + file.AppendEnv("config.yaml")
+	//configPath := pwd + "/" + "conf"
+	InitSources(configPath)
 	logs := config.Scan[LogConfigs]()
-
 	fmt.Printf("logs config %v", logs)
 
 }

@@ -18,7 +18,7 @@ type file struct {
 
 // NewSource new a file source.
 func NewSource(path string) config.Source {
-	return &file{path: appendEnv(path)}
+	return &file{path: path}
 }
 
 func (f *file) loadFile(path string) (*config.KeyValue, error) {
@@ -47,9 +47,15 @@ func (f *file) loadDir(path string) (kvs []*config.KeyValue, err error) {
 	if err != nil {
 		return nil, err
 	}
+
+	envPrefix := AppendEnv(config.DefaultPrefix) + "."
 	for _, file := range files {
+		fileName := file.Name()
 		// ignore hidden files
-		if file.IsDir() || strings.HasPrefix(file.Name(), ".") {
+		if file.IsDir() || strings.HasPrefix(fileName, ".") {
+			continue
+		}
+		if strings.HasPrefix(fileName, config.DefaultPrefix) && !strings.HasPrefix(fileName, envPrefix) {
 			continue
 		}
 		kv, err := f.loadFile(filepath.Join(path, file.Name()))
@@ -88,8 +94,8 @@ func projectEnv() string {
 	return ""
 }
 
-//appendEnv  根据项目的环境，给出不同的
-func appendEnv(path string) string {
+//AppendEnv  根据项目的环境，给出不同的
+func AppendEnv(path string) string {
 	env := projectEnv()
 	if env == "" {
 		return path
