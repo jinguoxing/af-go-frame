@@ -16,7 +16,7 @@ we dedicated to boosts your productivity. With the integration of excellent reso
 * **Robust**: Eliminating misusing through high quality of the base libs.
 * **High-performance**: Optimal performance, with zap logger insider
 * **Expandability**: Properly designed interfaces where you can expand utilities such as base libs to meet your further requirements.
-* **Fault-tolerance**: Designed against failure, enhance the understanding and exercising of SRE within Kratos to achieve more robustness.
+* **Fault-tolerance**: Designed against failure, enhance the understanding and exercising of SRE.
 * **Toolchain**: Includes an extensive toolchain.
 
 
@@ -38,4 +38,4 @@ we provide demo project blow:
 
 ## License
 
-The Kratos framework is open-sourced software licensed under the [MIT license](./LICENSE).
+The af-go-frame framework is open-sourced software licensed under the [MIT license](./LICENSE).
