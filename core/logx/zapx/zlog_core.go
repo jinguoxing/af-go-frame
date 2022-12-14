@@ -54,7 +54,7 @@ func DefaultCoreConfig() CoreConfig {
 		EnableColor:  true,
 		Destination:  ConsoleDestination,
 		OutputFormat: ConsoleFormat,
-		LogLevel:     DefaultLogLevelString,
+		LogLevel:     DebugLevel.String(),
 	}
 }
 
