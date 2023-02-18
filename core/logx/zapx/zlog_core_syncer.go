@@ -6,6 +6,7 @@ import (
 	"go.uber.org/zap/zapcore"
 	"io"
 	"os"
+	"path"
 	"strings"
 )
 
@@ -23,7 +24,8 @@ func (c CoreConfig) StdoutWriteSyncer() zapcore.WriteSyncer {
 //FileWriteSyncer write log to zapcore.WriteSyncer
 func (c CoreConfig) FileWriteSyncer() zapcore.WriteSyncer {
 	// check file path, create file if not exists
-	checkDir(c.Destination)
+	p := path.Dir(c.Destination)
+	checkDir(p)
 	// set filename format
 	fileNameFormat := DefaultFileNameFormat
 	if c.FileNameFormat != "" {
