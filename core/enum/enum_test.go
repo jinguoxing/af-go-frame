@@ -5,14 +5,14 @@ import (
 	"testing"
 )
 
-type FlowchartClassEnum MapObject
+type FlowchartClassEnum Object
 
 var (
 	FlowchartClassConfigStatusNormal      = New[FlowchartClassEnum](1, "normal")
 	FlowchartClassConfigStatusMissingRole = New[FlowchartClassEnum](2, "missingRole")
 )
 
-type SystemRoleClassEnum MapObject
+type SystemRoleClassEnum Object
 
 var (
 	SystemRoleClassEnumConfigStatusNormal      = New[SystemRoleClassEnum](1, "normals")
@@ -20,17 +20,11 @@ var (
 )
 
 func TestToInteger(t *testing.T) {
-	i := ToInteger[FlowchartClassEnum]("normal")
+	i := ToInteger[FlowchartClassEnum]("normal").Int()
 	assert.Equal(t, i, 1)
 }
 
 func TestToString(t *testing.T) {
 	s := ToString[FlowchartClassEnum](1)
 	assert.Equal(t, s, "normal")
-}
-
-func TestGet(t *testing.T) {
-	s := Get[SystemRoleClassEnum](uint8(1))
-	t.Log(s.Integer, s.String)
-	assert.NotNil(t, s)
 }

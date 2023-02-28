@@ -1,33 +1,45 @@
 package enum
 
 import (
-	"fmt"
 	"log"
 	"reflect"
 	"unsafe"
 )
 
-//stringEnumRecord  string to int reflection
-type stringEnumRecord map[string]uint8
+type IntegerType int8
 
-//intEnumRecord  int to string reflection
-type intEnumRecord map[uint8]string
+func (ip IntegerType) Int8() int8   { return int8(ip) }
+func (ip IntegerType) Int16() int16 { return int16(ip) }
+func (ip IntegerType) Int32() int32 { return int32(ip) }
+func (ip IntegerType) Int() int     { return int(ip) }
+
+func (ip IntegerType) Uint8() uint8   { return uint8(ip) }
+func (ip IntegerType) Uint16() uint16 { return uint16(ip) }
+func (ip IntegerType) Uint32() uint32 { return uint32(ip) }
+func (ip IntegerType) Uint() uint     { return uint(ip) }
+
+type recordPair struct {
+	//stringEnumRecord  string to int reflection
+	stringEnumRecord map[string]IntegerType
+	//intEnumRecord  int to string reflection
+	intEnumRecord map[IntegerType]string
+}
 
 //recordPairs stringEnumRecord and intEnumRecord pair, key is a empty  struct
-type recordPairs map[any][]any
+type recordPairs map[any]recordPair
 
 //allRecords  record all the EnumRecord  pair
-var allRecords = make(recordPairs)
+var allRecords recordPairs = make(map[any]recordPair)
 
-//MapObject one enum object
-type MapObject struct {
-	Integer uint8
+//Object one enum object
+type Object struct {
+	Integer *IntegerType
 	String  string
 }
 
-//MapProperty enum object record
-type MapProperty interface {
-	string | ~uint8
+//enumProperty enum object record
+type enumProperty interface {
+	string | ~uint | ~uint32 | ~uint16 | ~uint8 | ~int | ~int32 | ~int16 | ~int8
 }
 
 //set record the enum
@@ -35,76 +47,58 @@ func set[T any](e *T) {
 	key := *new(T)
 	maps, ok := allRecords[key]
 	if !ok {
-		maps = make([]any, 2)
-		maps[0] = make(stringEnumRecord)
-		maps[1] = make(intEnumRecord)
+		maps = recordPair{
+			stringEnumRecord: make(map[string]IntegerType),
+			intEnumRecord:    make(map[IntegerType]string),
+		}
 		allRecords[key] = maps
 	}
-	a := (*MapObject)(unsafe.Pointer(e))
-	(maps[0].(stringEnumRecord))[a.String] = a.Integer
-	(maps[1].(intEnumRecord))[a.Integer] = a.String
+	a := (*Object)(unsafe.Pointer(e))
+	maps.stringEnumRecord[a.String] = *a.Integer
+	maps.intEnumRecord[*a.Integer] = a.String
 }
 
-//load fix the EnumObject from recordPairs
+//load fix the Object from recordPairs
 func load[T any](e *T) {
-	key := *new(T)
-	maps, ok := allRecords[key]
+	maps, ok := allRecords[*new(T)]
 	if !ok {
-		return
+		log.Panicf("invalid enum struct %v", reflect.TypeOf(new(T)))
 	}
-	a := (*MapObject)(unsafe.Pointer(e))
+	a := (*Object)(unsafe.Pointer(e))
 	if a.String == "" {
-		a.String = (maps[1].(intEnumRecord))[a.Integer]
+		a.String = maps.intEnumRecord[*a.Integer]
 	}
-	if a.Integer < 0 {
-		a.Integer = (maps[0].(stringEnumRecord))[a.String]
+	if a.Integer == nil {
+		v := maps.stringEnumRecord[a.String]
+		a.Integer = &v
 	}
 }
 
 //ToString  find the string value of 'i'
-func ToString[T any](i uint8) string {
-	key := *new(T)
-	maps, ok := allRecords[key]
+func ToString[T any](i IntegerType) string {
+	maps, ok := allRecords[*new(T)]
 	if !ok {
 		log.Panicf("invalid enum struct %v", reflect.TypeOf(new(T)))
 	}
-	return (maps[1].(intEnumRecord))[i]
+	return maps.intEnumRecord[i]
 }
 
 //ToInteger find the uint8 value of 's'
-func ToInteger[T any](s string) uint8 {
-	key := *new(T)
-	maps, ok := allRecords[key]
+func ToInteger[T any](s string) IntegerType {
+	maps, ok := allRecords[*new(T)]
 	if !ok {
 		log.Panicf("invalid enum struct %v", reflect.TypeOf(new(T)))
 	}
-	return (maps[0].(stringEnumRecord))[s]
+	return maps.stringEnumRecord[s]
 }
 
 //New generate EnumClass
-func New[T any](i uint8, s string) *T {
-	e := MapObject{
-		Integer: i,
+func New[T any](i IntegerType, s string) *T {
+	e := Object{
+		Integer: &i,
 		String:  s,
 	}
 	p := (*T)(unsafe.Pointer(&e))
-	set(p)
-	return p
-}
-
-// Get return EnumObject by value 'ev'
-func Get[T any, P MapProperty](ev P) *T {
-	p := new(T)
-	e := (*MapObject)(unsafe.Pointer(p))
-
-	var evi interface{}
-	evi = ev
-	switch evi.(type) {
-	case string:
-		e.String = fmt.Sprintf("%v", ev)
-	default:
-		e.Integer = *(*uint8)(unsafe.Pointer(&ev))
-	}
-	load(p)
+	set[T](p)
 	return p
 }
