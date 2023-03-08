@@ -28,3 +28,11 @@ func TestToString(t *testing.T) {
 	s := ToString[FlowchartClassEnum](1)
 	assert.Equal(t, s, "normal")
 }
+
+func TestIs(t *testing.T) {
+	s1 := Is[FlowchartClassEnum](4)
+	assert.Equal(t, s1, false)
+
+	s2 := Is[FlowchartClassEnum]("xxx")
+	assert.Equal(t, s2, false)
+}

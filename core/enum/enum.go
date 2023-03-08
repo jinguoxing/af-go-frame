@@ -1,8 +1,10 @@
 package enum
 
 import (
+	"fmt"
 	"log"
 	"reflect"
+	"strconv"
 	"unsafe"
 )
 
@@ -101,4 +103,25 @@ func New[T any](i IntegerType, s string) *T {
 	p := (*T)(unsafe.Pointer(&e))
 	set[T](p)
 	return p
+}
+
+//Is  check whether value v is a valid enum value
+func Is[T any, P enumProperty](v P) bool {
+	eObj := new(T)
+	maps, ok := allRecords[*eObj]
+	if !ok {
+		log.Panicf("invalid enum struct %v", reflect.TypeOf(new(T)))
+	}
+	var ev interface{}
+	ev = v
+	switch ev.(type) {
+	case string:
+		_, ok := maps.stringEnumRecord[ev.(string)]
+		return ok
+	default:
+		pv, _ := strconv.Atoi(fmt.Sprintf("%v", ev))
+		_, ok := maps.intEnumRecord[(IntegerType)(pv)]
+		return ok
+	}
+	return false
 }
