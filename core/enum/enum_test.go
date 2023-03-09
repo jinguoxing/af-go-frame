@@ -25,8 +25,12 @@ func TestToInteger(t *testing.T) {
 }
 
 func TestToString(t *testing.T) {
-	s := ToString[FlowchartClassEnum](1)
-	assert.Equal(t, s, "normal")
+	s1 := ToString[FlowchartClassEnum](1)
+	assert.Equal(t, s1, "normal")
+
+	a := int8(2)
+	s2 := ToString[FlowchartClassEnum](a)
+	assert.Equal(t, s2, "missingRole")
 }
 
 func TestIs(t *testing.T) {

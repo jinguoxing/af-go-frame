@@ -8,12 +8,15 @@ import (
 	"unsafe"
 )
 
+//IntegerType 整形数据 int8，已经满足很多场景的枚举需求了，其他的数据类型纯属为了兼容
 type IntegerType int8
 
 func (ip IntegerType) Int8() int8   { return int8(ip) }
 func (ip IntegerType) Int16() int16 { return int16(ip) }
 func (ip IntegerType) Int32() int32 { return int32(ip) }
 func (ip IntegerType) Int() int     { return int(ip) }
+
+//下面几种方法不支持有符号数据，有符号数据会转成无符号的数据类型
 
 func (ip IntegerType) Uint8() uint8   { return uint8(ip) }
 func (ip IntegerType) Uint16() uint16 { return uint16(ip) }
@@ -42,6 +45,11 @@ type Object struct {
 //enumProperty enum object record
 type enumProperty interface {
 	string | ~uint | ~uint32 | ~uint16 | ~uint8 | ~int | ~int32 | ~int16 | ~int8
+}
+
+//enumInteger enum integer type
+type enumInteger interface {
+	~uint | ~uint32 | ~uint16 | ~uint8 | ~int | ~int32 | ~int16 | ~int8
 }
 
 //set record the enum
@@ -77,12 +85,13 @@ func load[T any](e *T) {
 }
 
 //ToString  find the string value of 'i'
-func ToString[T any](i IntegerType) string {
+func ToString[T any, V enumInteger](i V) string {
 	maps, ok := allRecords[*new(T)]
 	if !ok {
 		log.Panicf("invalid enum struct %v", reflect.TypeOf(new(T)))
 	}
-	return maps.intEnumRecord[i]
+	iv := IntegerType(i)
+	return maps.intEnumRecord[iv]
 }
 
 //ToInteger find the uint8 value of 's'
