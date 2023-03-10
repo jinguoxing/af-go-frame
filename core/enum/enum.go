@@ -38,8 +38,9 @@ var allRecords recordPairs = make(map[any]recordPair)
 
 //Object one enum object
 type Object struct {
-	Integer *IntegerType
-	String  string
+	Integer *IntegerType // 枚举整形值
+	String  string       // 枚举的字符串表示值，英文
+	Display string       // 枚举的前端展示值，中文
 }
 
 //enumProperty enum object record
@@ -104,10 +105,16 @@ func ToInteger[T any](s string) IntegerType {
 }
 
 //New generate EnumClass
-func New[T any](i IntegerType, s string) *T {
+func New[T any](i IntegerType, s ...string) *T {
+	if len(s) <= 0 {
+		log.Panicf("invalid enum object %v, missing string value", reflect.TypeOf(new(T)))
+	}
 	e := Object{
 		Integer: &i,
-		String:  s,
+		String:  s[0],
+	}
+	if len(s) >= 2 {
+		e.Display = s[1]
 	}
 	p := (*T)(unsafe.Pointer(&e))
 	set[T](p)

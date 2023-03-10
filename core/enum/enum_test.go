@@ -8,8 +8,8 @@ import (
 type FlowchartClassEnum Object
 
 var (
-	FlowchartClassConfigStatusNormal      = New[FlowchartClassEnum](1, "normal")
-	FlowchartClassConfigStatusMissingRole = New[FlowchartClassEnum](2, "missingRole")
+	FlowchartClassConfigStatusNormal      = New[FlowchartClassEnum](1, "normal", "正常")
+	FlowchartClassConfigStatusMissingRole = New[FlowchartClassEnum](2, "missingRole", "缺失角色")
 )
 
 type SystemRoleClassEnum Object
@@ -39,4 +39,8 @@ func TestIs(t *testing.T) {
 
 	s2 := Is[FlowchartClassEnum]("xxx")
 	assert.Equal(t, s2, false)
+}
+
+func TestDisplay(t *testing.T) {
+	assert.Equal(t, FlowchartClassConfigStatusNormal.Display, "正常")
 }
