@@ -1,0 +1,5 @@
+logs:
+  - name: ago
+    cores:
+      - destination: stdout
+        log_level: info

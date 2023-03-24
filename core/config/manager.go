@@ -5,6 +5,8 @@ const (
 	ProjectEnvKey = "PROJECT_ENV"
 	//ProjectPrefix project env key prefix
 	ProjectPrefix = "PROJECT_PREFIX"
+	//DefaultPrefix  default config file name prefix
+	DefaultPrefix = "config"
 )
 
 var manager *Manager
