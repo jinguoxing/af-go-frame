@@ -25,9 +25,9 @@ func (ip IntegerType) Uint() uint     { return uint(ip) }
 
 type recordPair struct {
 	//stringEnumRecord  string to int reflection
-	stringEnumRecord map[string]IntegerType
+	stringEnumRecord map[string]Object
 	//intEnumRecord  int to string reflection
-	intEnumRecord map[IntegerType]string
+	intEnumRecord map[IntegerType]Object
 }
 
 //recordPairs stringEnumRecord and intEnumRecord pair, key is a empty  struct
@@ -59,30 +59,14 @@ func set[T any](e *T) {
 	maps, ok := allRecords[key]
 	if !ok {
 		maps = recordPair{
-			stringEnumRecord: make(map[string]IntegerType),
-			intEnumRecord:    make(map[IntegerType]string),
+			stringEnumRecord: make(map[string]Object),
+			intEnumRecord:    make(map[IntegerType]Object),
 		}
 		allRecords[key] = maps
 	}
 	a := (*Object)(unsafe.Pointer(e))
-	maps.stringEnumRecord[a.String] = *a.Integer
-	maps.intEnumRecord[*a.Integer] = a.String
-}
-
-//load fix the Object from recordPairs
-func load[T any](e *T) {
-	maps, ok := allRecords[*new(T)]
-	if !ok {
-		log.Panicf("invalid enum struct %v", reflect.TypeOf(new(T)))
-	}
-	a := (*Object)(unsafe.Pointer(e))
-	if a.String == "" {
-		a.String = maps.intEnumRecord[*a.Integer]
-	}
-	if a.Integer == nil {
-		v := maps.stringEnumRecord[a.String]
-		a.Integer = &v
-	}
+	maps.stringEnumRecord[a.String] = *a
+	maps.intEnumRecord[*a.Integer] = *a
 }
 
 //ToString  find the string value of 'i'
@@ -92,7 +76,7 @@ func ToString[T any, V enumInteger](i V) string {
 		log.Panicf("invalid enum struct %v", reflect.TypeOf(new(T)))
 	}
 	iv := IntegerType(i)
-	return maps.intEnumRecord[iv]
+	return maps.intEnumRecord[iv].String
 }
 
 //ToInteger find the uint8 value of 's'
@@ -101,7 +85,7 @@ func ToInteger[T any](s string) IntegerType {
 	if !ok {
 		log.Panicf("invalid enum struct %v", reflect.TypeOf(new(T)))
 	}
-	return maps.stringEnumRecord[s]
+	return *(maps.stringEnumRecord[s].Integer)
 }
 
 //New generate EnumClass
@@ -140,4 +124,51 @@ func Is[T any, P enumProperty](v P) bool {
 		return ok
 	}
 	return false
+}
+
+//Get  获取枚举值常量
+func Get[T any, P enumProperty](v P) (o *T) {
+	maps, ok := allRecords[*new(T)]
+	if !ok {
+		log.Panicf("invalid enum struct %v", reflect.TypeOf(new(T)))
+	}
+	//新建返回结果
+	enumObj := new(T)
+	obj := (*Object)(unsafe.Pointer(enumObj))
+
+	var ev interface{} = v
+	var sourceObj Object
+	switch ev.(type) {
+	case string:
+		key := fmt.Sprintf("%v", ev)
+		sourceObj = maps.stringEnumRecord[key]
+	default:
+		pv, _ := strconv.Atoi(fmt.Sprintf("%v", ev))
+		sourceObj = maps.intEnumRecord[IntegerType(pv)]
+	}
+	obj.String = sourceObj.String
+	obj.Integer = sourceObj.Integer
+	obj.Display = sourceObj.Display
+	return enumObj
+}
+
+func convert[T any](obj Object) *T {
+	enumObj := new(T)
+	destObj := (*Object)(unsafe.Pointer(enumObj))
+	destObj.String = obj.String
+	destObj.Integer = obj.Integer
+	destObj.Display = obj.Display
+	return enumObj
+}
+
+func List[T any]() []T {
+	maps, ok := allRecords[*new(T)]
+	if !ok {
+		log.Panicf("invalid enum struct %v", reflect.TypeOf(new(T)))
+	}
+	results := make([]T, 0, len(maps.stringEnumRecord))
+	for _, obj := range maps.stringEnumRecord {
+		results = append(results, *convert[T](obj))
+	}
+	return results
 }
