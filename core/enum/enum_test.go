@@ -43,4 +43,6 @@ func TestIs(t *testing.T) {
 
 func TestDisplay(t *testing.T) {
 	assert.Equal(t, FlowchartClassConfigStatusNormal.Display, "正常")
+	assert.Equal(t, Get[FlowchartClassEnum]("normal").Display, "正常")
+	assert.Equal(t, len(List[FlowchartClassEnum]()), 2)
 }
