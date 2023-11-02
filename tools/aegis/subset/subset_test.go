@@ -6,8 +6,8 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/go-kratos/aegis/internal/consistent"
 	"github.com/google/uuid"
+	"github.com/jinguoxing/af-go-frame/tools/aegis/internal/consistent"
 	"github.com/stretchr/testify/assert"
 )
 

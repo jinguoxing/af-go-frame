@@ -1,4 +1,4 @@
-module github.com/go-kratos/aegis
+module github.com/jinguoxing/af-go-frame/tools/aegis/
 
 go 1.18
 

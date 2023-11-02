@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"sync"
 
-	"github.com/go-kratos/aegis/topk"
+	"github.com/jinguoxing/af-go-frame/tools/aegis/topk"
 )
 
 type CacheRuleConfig struct {

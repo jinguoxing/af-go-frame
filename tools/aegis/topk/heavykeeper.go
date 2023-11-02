@@ -7,7 +7,7 @@ import (
 	"math"
 	"math/rand"
 
-	"github.com/go-kratos/aegis/internal/minheap"
+	"github.com/jinguoxing/af-go-frame/tools/aegis/internal/minheap"
 
 	"github.com/twmb/murmur3"
 )
